@@ -142,6 +142,41 @@ const productModels = {
     }
 };
 
+
+
+
+
+
+
+// --- Color Selection Memory System ---
+const COLOR_MEMORY_KEY = 'qudwahColorMemory';
+
+// Function to save color selection for a model
+const saveColorSelection = (model, color) => {
+    let colorMemory = JSON.parse(localStorage.getItem(COLOR_MEMORY_KEY)) || {};
+    colorMemory[model] = color;
+    localStorage.setItem(COLOR_MEMORY_KEY, JSON.stringify(colorMemory));
+};
+
+// Function to get saved color for a model
+const getSavedColor = (model) => {
+    const colorMemory = JSON.parse(localStorage.getItem(COLOR_MEMORY_KEY)) || {};
+    return colorMemory[model];
+};
+
+// Function to clear color memory (optional - can be called on page unload if needed)
+const clearColorMemory = () => {
+    localStorage.removeItem(COLOR_MEMORY_KEY);
+};
+
+
+
+
+
+
+
+
+
 const quickOrderBtn = document.querySelector('.quick-order-btn');
 
 if (quickOrderBtn) {
@@ -164,6 +199,7 @@ if (quickOrderBtn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
     // --- DOM Elements ---
     const mainProductImage = document.getElementById('main-product-image');
     const thumbnailContainer = document.querySelector('.thumbnail-images');
@@ -179,11 +215,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const productPrice = document.querySelector('.product-price');
     const productDescription = document.querySelector('.product-description p');
 
-// --- State Variables ---
-let currentModel = 'model1';
-let selectedColor = 'olive-green'; // غير من 'black' إلى 'olive-green'
-let selectedSize = '52';
-let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
+    // --- State Variables ---
+    let currentModel = 'model1';
+    let selectedColor = 'olive-green';
+    let selectedSize = '52';
+    let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
+
+    // --- Color Saving Helpers ---
+    function saveColorSelection(model, color) {
+        localStorage.setItem('savedColor_' + model, color);
+    }
+
+    function getSavedColor(model) {
+        return localStorage.getItem('savedColor_' + model);
+    }
+
     // --- Helper Functions ---
 
     const scrollToTop = () => {
@@ -193,35 +239,9 @@ let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
     const updateProductInfo = () => {
         const modelData = productModels[currentModel];
         if (productTitle) productTitle.textContent = modelData.name;
-        if (productPrice) productPrice.textContent = `${modelData.price.toLocaleString('ar-DZ')} د.ج`;
+        if (productPrice)
+            productPrice.textContent = `${modelData.price.toLocaleString('ar-DZ')} د.ج`;
         if (productDescription) productDescription.textContent = modelData.description;
-    };
-
-    const createColorButtons = () => {
-        colorContainer.innerHTML = '';
-        const modelData = productModels[currentModel];
-        
-        Object.entries(modelData.colors).forEach(([colorKey, colorData]) => {
-            const button = document.createElement('button');
-            button.className = `color-btn ${colorKey === selectedColor ? 'active' : ''}`;
-            button.dataset.color = colorKey;
-            button.textContent = colorData.name;
-            
-            // إضافة الأنماط الخاصة بالألوان
-            if (colorKey === 'blue' || colorKey === 'green' || colorKey === 'yellow') {
-                button.style.background = `linear-gradient(135deg, ${getColorGradient(colorKey)})`;
-                button.style.color = colorKey === 'yellow' ? 'var(--text-color)' : 'var(--white)';
-                button.style.borderColor = getColorBorder(colorKey);
-            }
-            
-            button.addEventListener('click', () => {
-                selectedColor = colorKey;
-                updateProductDisplay();
-                scrollToTop();
-            });
-            
-            colorContainer.appendChild(button);
-        });
     };
 
     const getColorGradient = (color) => {
@@ -240,6 +260,37 @@ let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
             'yellow': '#ffd700'
         };
         return borders[color] || '#000000';
+    };
+
+    // --- Updated createColorButtons ---
+    const createColorButtons = () => {
+        colorContainer.innerHTML = '';
+        const modelData = productModels[currentModel];
+        
+        Object.entries(modelData.colors).forEach(([colorKey, colorData]) => {
+            const button = document.createElement('button');
+            button.className = `color-btn ${colorKey === selectedColor ? 'active' : ''}`;
+            button.dataset.color = colorKey;
+            button.textContent = colorData.name;
+
+            if (['blue', 'green', 'yellow'].includes(colorKey)) {
+                button.style.background = `linear-gradient(135deg, ${getColorGradient(colorKey)})`;
+                button.style.color = colorKey === 'yellow' ? 'var(--text-color)' : 'var(--white)';
+                button.style.borderColor = getColorBorder(colorKey);
+            }
+
+            button.addEventListener('click', () => {
+                selectedColor = colorKey;
+
+                // ⭐ Save user's chosen color
+                saveColorSelection(currentModel, selectedColor);
+
+                updateProductDisplay();
+                scrollToTop();
+            });
+
+            colorContainer.appendChild(button);
+        });
     };
 
     const createSizeButtons = () => {
@@ -284,43 +335,49 @@ let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
             
             thumbnailContainer.appendChild(thumb);
         });
-        
-        // تحديث الصورة الرئيسية
+
         if (colorData.thumbnails.length > 0) {
             mainProductImage.src = colorData.thumbnails[0];
         }
     };
 
+    // --- Updated updateProductDisplay ---
     const updateProductDisplay = () => {
         createColorButtons();
         createSizeButtons();
         updateThumbnails();
+
+        if (productPrice) {
+            const modelData = productModels[currentModel];
+            productPrice.textContent = `${modelData.price.toLocaleString('ar-DZ')} د.ج`;
+        }
     };
 
+    // --- Updated switchModel ---
     const switchModel = (model) => {
         currentModel = model;
         const modelData = productModels[model];
-        selectedColor = Object.keys(modelData.colors)[0];
+
+        const savedColor = getSavedColor(model);
+        selectedColor = savedColor || Object.keys(modelData.colors)[0];
         selectedSize = modelData.colors[selectedColor].availableSizes[0];
-        
+
         updateProductInfo();
         updateProductDisplay();
-        
-        // تحديث الأزرار النشطة
+
         modelButtons.forEach(btn => {
             btn.classList.remove('active');
             if (btn.dataset.model === model) btn.classList.add('active');
         });
-        
-        // تتبع مشاهدة المنتج
-trackViewContent({
-    id: `${currentModel}-${selectedColor}-${selectedSize}`, 
-    model: currentModel,
-    color: selectedColor,
-    size: selectedSize,
-    name: modelData.name,
-    price: modelData.price
-});
+
+        trackViewContent({
+            id: `${currentModel}-${selectedColor}-${selectedSize}`,
+            model: currentModel,
+            color: selectedColor,
+            size: selectedSize,
+            name: modelData.name,
+            price: modelData.price
+        });
     };
 
     const updateGlobalCartCount = () => {
@@ -332,30 +389,27 @@ trackViewContent({
         localStorage.setItem('qudwahCart', JSON.stringify(cart));
     };
 
-    // --- TikTok Tracking Functions ---
-function trackViewContent(product) {
-    if (typeof trackTikTokViewContent !== 'undefined') {
-        trackTikTokViewContent(product);
+    // --- TikTok Tracking ---
+    function trackViewContent(product) {
+        if (typeof trackTikTokViewContent !== 'undefined') {
+            trackTikTokViewContent(product);
+        }
     }
-}
 
-function trackAddToCart(product) {
-    if (typeof trackTikTokAddToCart !== 'undefined') {
-        trackTikTokAddToCart(product);
+    function trackAddToCart(product) {
+        if (typeof trackTikTokAddToCart !== 'undefined') {
+            trackTikTokAddToCart(product);
+        }
     }
-}
 
-    // --- Event Listeners ---
+    // --- Events ---
 
-    // Model switching
     modelButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const model = button.dataset.model;
-            switchModel(model);
+            switchModel(button.dataset.model);
         });
     });
 
-    // Quantity controls
     minusBtn.addEventListener('click', () => {
         const val = parseInt(quantityInput.value);
         if (val > 1) quantityInput.value = val - 1;
@@ -371,7 +425,6 @@ function trackAddToCart(product) {
         if (isNaN(val) || val < 1) quantityInput.value = 1;
     });
 
-    // Add to cart
     addToCartBtn.addEventListener('click', () => {
         const quantity = parseInt(quantityInput.value);
         const modelData = productModels[currentModel];
@@ -397,7 +450,6 @@ function trackAddToCart(product) {
         saveCartToLocalStorage();
         updateGlobalCartCount();
 
-        // تتبع إضافة للسلة
         trackAddToCart({
             id: productId,
             name: modelData.name,
@@ -413,43 +465,15 @@ function trackAddToCart(product) {
     updateProductDisplay();
     updateGlobalCartCount();
 
-    // تتبع مشاهدة المنتج الأولي
-trackViewContent({
-    id: `${currentModel}-${selectedColor}-${selectedSize}`,
-    model: currentModel,
-    color: selectedColor,
-    size: selectedSize,
-    name: productModels[currentModel].name,
-    price: productModels[currentModel].price
-});
-});
-
-
-
-
-
-
-
-
-
-
-
-// جعل currentModel متاحاً عالمياً لملف quick-order.js
-window.currentModel = currentModel;
-
-// تحديث window.currentModel عند تغيير الموديل
-const originalSwitchModel = switchModel;
-switchModel = (model) => {
-    originalSwitchModel(model);
-    window.currentModel = currentModel;
-    
-    // إرسال حدث لتحديث quick-order.js
-    const modelChangedEvent = new CustomEvent('modelChanged', {
-        detail: { model: currentModel }
+    trackViewContent({
+        id: `${currentModel}-${selectedColor}-${selectedSize}`,
+        model: currentModel,
+        color: selectedColor,
+        size: selectedSize,
+        name: productModels[currentModel].name,
+        price: productModels[currentModel].price
     });
-    document.dispatchEvent(modelChangedEvent);
+});
 
-};
-
-
-
+// Make available for quick-order.js
+window.currentModel = currentModel;
