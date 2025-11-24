@@ -2021,9 +2021,10 @@ button:hover {
     border-color: #040509;
 }
 .color-btn[data-color="gray2"] {
-    background: linear-gradient(135deg, #7f838c, #656360);
+    background: linear-gradient(135deg, #7f838c, #7f838c);
     color: white;
     border-color: #555354;
 }
+
 
 
