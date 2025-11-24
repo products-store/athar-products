@@ -2021,10 +2021,11 @@ button:hover {
     border-color: #040509;
 }
 .color-btn[data-color="gray2"] {
-    background: #7f838c;
+    background: #6a7178;
     color: white;
     border-color: #555354;
 }
+
 
 
 
