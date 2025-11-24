@@ -83,9 +83,9 @@ const productModels = {
                 availableSizes: ['52', '54', '56', '58']
             },
 
-            'gray': {
+            'gray2': {
                 name: 'رمادي',
-                main: 'images/gray-1.webp',
+                main: 'images/gray2-1.webp',
                 thumbnails: [
                     'images/gray2-1.webp',
                     'images/gray2-2.webp',
@@ -450,5 +450,6 @@ switchModel = (model) => {
     document.dispatchEvent(modelChangedEvent);
 
 };
+
 
 
