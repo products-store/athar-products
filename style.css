@@ -2020,4 +2020,10 @@ button:hover {
     color: white;
     border-color: #040509;
 }
+.color-btn[data-color="gray2"] {
+    background: linear-gradient(135deg, #7f838c, #656360);
+    color: white;
+    border-color: #555354;
+}
+
 
