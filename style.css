@@ -1982,13 +1982,13 @@ button:hover {
 .color-btn[data-color="light-green"] {
     background: linear-gradient(135deg, #9f9e88, #b5b4a0);
     color: #333;
-    border-color: #9f9e88;
+    border-color: #bcc4b0;
 }
 
 .color-btn[data-color="gray"] {
     background: linear-gradient(135deg, #555354, #6d6b6c);
     color: white;
-    border-color: #555354;
+    border-color: #4d4b44;
 }
 
 .color-btn[data-color="blue-petrol"] {
@@ -2019,4 +2019,5 @@ button:hover {
     background: linear-gradient(135deg, #040509, #1a1a1a);
     color: white;
     border-color: #040509;
+
 }
