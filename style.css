@@ -1980,15 +1980,15 @@ button:hover {
 }
 
 .color-btn[data-color="light-green"] {
-    background: linear-gradient(135deg, #9f9e88, #b5b4a0);
+    background: linear-gradient(135deg, #bcc4b0, #d0d8c4);
     color: #333;
-    border-color: #bcc4b0;
+    border-color: #9f9e88;
 }
 
 .color-btn[data-color="gray"] {
-    background: linear-gradient(135deg, #555354, #6d6b6c);
+    background: linear-gradient(135deg, #4d4b44, #656360);
     color: white;
-    border-color: #4d4b44;
+    border-color: #555354;
 }
 
 .color-btn[data-color="blue-petrol"] {
@@ -2019,5 +2019,5 @@ button:hover {
     background: linear-gradient(135deg, #040509, #1a1a1a);
     color: white;
     border-color: #040509;
-
 }
+
