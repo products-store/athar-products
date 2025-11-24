@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Discord Webhook URL
-    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1390378331488391261/FyhtoHaCCLXtdGoBZyvSPSoHUPsZn5LS0R9FxwbA7ehJH0mRT_drtftCD9SYd07ncVuT';
+    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1442645028273918063/I5OfJZAuJggWAC6j3Ng19Jkzj9MMVQJDfqPAUY6q1_fRL3dE_QzUkkYDHBkYA1BzLnoq';
 
     // Data for Algerian Wilayas (Provinces) and delivery prices
     const wilayaPrices = [
@@ -500,4 +500,5 @@ if (typeof trackTikTokPurchase !== 'undefined') {
         saveInfoOnInput();
     }));
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
+
 });
