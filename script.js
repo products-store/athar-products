@@ -87,10 +87,10 @@ const productModels = {
                 name: 'رمادي',
                 main: 'images/gray-1.webp',
                 thumbnails: [
-                    'images/gray-1.webp',
-                    'images/gray-2.webp',
-                    'images/gray-3.webp',
-                    'images/gray-4.webp'
+                    'images/gray2-1.webp',
+                    'images/gray2-2.webp',
+                    'images/gray2-3.webp',
+                    'images/gray2-4.webp'
                 ],
                 availableSizes: ['52', '54', '56', '58']
             },
@@ -450,4 +450,5 @@ switchModel = (model) => {
     document.dispatchEvent(modelChangedEvent);
 
 };
+
 
