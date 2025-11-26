@@ -126,7 +126,7 @@ function trackTikTokPurchase(order) {
         // استخدام نفس بيانات الموديل من script.js
         const modelData = {
             model1: { price: 4800 },
-            model2: { price: 5200 }
+            model2: { price: 4800 }
         };
         
         // محاولة الحصول على الموديل الحالي من script.js
@@ -502,3 +502,4 @@ if (typeof trackTikTokPurchase !== 'undefined') {
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
 
 });
+
