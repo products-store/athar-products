@@ -121,25 +121,24 @@ function trackTikTokPurchase(order) {
 
     // --- Functions ---
 
-    // الحصول على سعر المنتج الحالي بناءً على الموديل
-    const getCurrentProductPrice = () => {
-        // استخدام نفس بيانات الموديل من script.js
-        const modelData = {
-            model1: { price: 4800 },
-            model2: { price: 4800 }
-        };
-        
-        // محاولة الحصول على الموديل الحالي من script.js
-        if (typeof window.currentModel !== 'undefined') {
-            currentModel = window.currentModel;
-        } else {
-            // إذا لم يكن متوفراً، نستخدم الزر النشط لتحديد الموديل
-            const activeModelBtn = document.querySelector('.model-btn.active');
-            currentModel = activeModelBtn ? activeModelBtn.dataset.model : 'model1';
-        }
-        
-        return modelData[currentModel]?.price || 4800;
+// الحصول على سعر المنتج الحالي بناءً على الموديل
+const getCurrentProductPrice = () => {
+    // استخدام نفس بيانات الموديل من script.js
+    const modelData = {
+        model1: { price: 4800 },
+        model2: { price: 4800 } // تأكد من أن السعر صحيح
     };
+    
+    // الاستماع لحدث تغيير الموديل بدلاً من الاعتماد على window.currentModel
+    let currentModel = 'model1';
+    
+    // تحديث الموديل عند تلقي الحدث
+    window.addEventListener('modelChanged', (event) => {
+        currentModel = event.detail.model;
+    });
+    
+    return modelData[currentModel]?.price || 4800;
+};
 
     // الحصول على اسم المنتج الحالي
     const getCurrentProductName = () => {
@@ -502,4 +501,5 @@ if (typeof trackTikTokPurchase !== 'undefined') {
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
 
 });
+
 
