@@ -150,8 +150,8 @@ const productModels = {
 // --------------------------------------
 //            GLOBAL VARIABLES
 // --------------------------------------
-let currentModel = 'model1';
-let selectedColor = 'olive-green';
+let currentModel = 'model2'; 
+let selectedColor = 'blue-petrol'; 
 let selectedSize = '52';
 let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
 
@@ -487,3 +487,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // expose globally
 window.currentModel = currentModel;
 window.productModels = productModels;
+
