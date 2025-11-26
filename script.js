@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const productDescription = document.querySelector('.product-description p');
 
     // --- State Variables ---
-    let currentModel = 'model2';
+    let currentModel = 'model1';
     let selectedColor = 'olive-green';
     let selectedSize = '52';
     let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
@@ -477,4 +477,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Make available for quick-order.js
 window.currentModel = currentModel;
-
