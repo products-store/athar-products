@@ -1,5 +1,4 @@
 // --- Product Data Definition ---
-// --- Product Data Definition ---
 const productModels = {
     model1: {
         name: "قميص شتوي رجالي",
@@ -147,214 +146,230 @@ const productModels = {
 
 
 
-// --------------------------------------
-//            GLOBAL VARIABLES
-// --------------------------------------
-let currentModel = 'model2'; 
-let selectedColor = 'blue-petrol'; 
-let selectedSize = '52';
-let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
 
-
-// --------------------------------------
-//     COLOR MEMORY SYSTEM (Preserve)
-// --------------------------------------
+// --- Color Selection Memory System ---
 const COLOR_MEMORY_KEY = 'qudwahColorMemory';
 
+// Function to save color selection for a model
 const saveColorSelection = (model, color) => {
     let colorMemory = JSON.parse(localStorage.getItem(COLOR_MEMORY_KEY)) || {};
     colorMemory[model] = color;
     localStorage.setItem(COLOR_MEMORY_KEY, JSON.stringify(colorMemory));
 };
 
+// Function to get saved color for a model
 const getSavedColor = (model) => {
     const colorMemory = JSON.parse(localStorage.getItem(COLOR_MEMORY_KEY)) || {};
     return colorMemory[model];
 };
 
-
-// --------------------------------------
-//        COLOR GRADIENT FUNCTIONS
-//     (Imported from OLD CODE - kept)
-// --------------------------------------
-const getColorGradient = (color) => {
-    const gradients = {
-        'blue': '#1e3c72, #2a5298',
-        'green': '#2e8b57, #3cb371',
-        'yellow': '#ffd700, #ffec8b',
-        'olive-green': '#1b241d, #1b241d',
-        'brown': '#605038, #605038',
-        'light-green': '#9f9e88, #9f9e88',
-        'gray': '#555354, #555354'
-    };
-    return gradients[color] || '#000000, #333333';
-};
-
-const getColorBorder = (color) => {
-    const borders = {
-        'blue': '#1e3c72',
-        'green': '#2e8b57',
-        'yellow': '#ffd700',
-        'olive-green': '#1b241d',
-        'brown': '#605038',
-        'light-green': '#9f9e88',
-        'gray': '#555354'
-    };
-    return borders[color] || '#000000';
+// Function to clear color memory (optional - can be called on page unload if needed)
+const clearColorMemory = () => {
+    localStorage.removeItem(COLOR_MEMORY_KEY);
 };
 
 
-// --------------------------------------
-//              HELPERS
-// --------------------------------------
-const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
 
-const updateProductInfo = () => {
-    const modelData = productModels[currentModel];
 
+
+
+
+
+
+const quickOrderBtn = document.querySelector('.quick-order-btn');
+
+if (quickOrderBtn) {
+    quickOrderBtn.addEventListener('click', () => {
+        const quickOrderCard = document.getElementById('quick-order-card');
+        if (quickOrderCard) {
+            quickOrderCard.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            quickOrderCard.style.transition = 'all 0.5s ease';
+            quickOrderCard.style.boxShadow = '0 0 0 3px rgba(0, 123, 255, 0.5)';
+            
+            setTimeout(() => {
+                quickOrderCard.style.boxShadow = 'var(--box-shadow)';
+            }, 1500);
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- DOM Elements ---
+    const mainProductImage = document.getElementById('main-product-image');
+    const thumbnailContainer = document.querySelector('.thumbnail-images');
+    const colorContainer = document.querySelector('.colors');
+    const sizeContainer = document.querySelector('.sizes');
+    const quantityInput = document.querySelector('.quantity-input');
+    const minusBtn = document.querySelector('.quantity-btn.minus');
+    const plusBtn = document.querySelector('.quantity-btn.plus');
+    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+    const cartCountElement = document.querySelector('.cart-count');
+    const modelButtons = document.querySelectorAll('.model-btn');
     const productTitle = document.querySelector('.product-title');
     const productPrice = document.querySelector('.product-price');
     const productDescription = document.querySelector('.product-description p');
 
-    if (productTitle) productTitle.textContent = modelData.name;
-    if (productPrice) productPrice.textContent = `${modelData.price.toLocaleString('ar-DZ')} د.ج`;
-    if (productDescription) productDescription.textContent = modelData.description;
-};
+    // --- State Variables ---
+    let currentModel = 'model1';
+    let selectedColor = 'olive-green';
+    let selectedSize = '52';
+    let cart = JSON.parse(localStorage.getItem('qudwahCart')) || [];
 
-
-// --------------------------------------
-//        CREATE COLOR BUTTONS
-//     (Merged old + new version)
-// --------------------------------------
-const createColorButtons = () => {
-    const colorContainer = document.querySelector('.colors');
-    if (!colorContainer) return;
-
-    colorContainer.innerHTML = '';
-    const modelData = productModels[currentModel];
-
-    Object.entries(modelData.colors).forEach(([colorKey, colorData]) => {
-        const button = document.createElement('button');
-        button.className = `color-btn ${colorKey === selectedColor ? 'active' : ''}`;
-        button.dataset.color = colorKey;
-        button.textContent = colorData.name;
-
-        // ❤️ Restore gradient visual effect
-        button.style.background = `linear-gradient(135deg, ${getColorGradient(colorKey)})`;
-        button.style.borderColor = getColorBorder(colorKey);
-        button.style.color = colorKey === 'yellow' ? 'var(--text-color)' : 'var(--white)';
-
-        button.addEventListener('click', () => {
-            selectedColor = colorKey;
-            saveColorSelection(currentModel, selectedColor);
-            updateProductDisplay();
-            scrollToTop();
-        });
-
-        colorContainer.appendChild(button);
-    });
-};
-
-
-// --------------------------------------
-//              SIZE BUTTONS
-// --------------------------------------
-const createSizeButtons = () => {
-    const sizeContainer = document.querySelector('.sizes');
-    if (!sizeContainer) return;
-
-    sizeContainer.innerHTML = '';
-    const modelData = productModels[currentModel];
-    const colorData = modelData.colors[selectedColor];
-
-    colorData.availableSizes.forEach(size => {
-        const button = document.createElement('button');
-        button.className = `size-btn ${size === selectedSize ? 'active' : ''}`;
-        button.dataset.size = size;
-        button.textContent = size;
-
-        button.addEventListener('click', () => {
-            if (!button.classList.contains('disabled')) {
-                document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                selectedSize = size;
-            }
-        });
-
-        sizeContainer.appendChild(button);
-    });
-};
-
-
-// --------------------------------------
-//             THUMBNAILS
-// --------------------------------------
-const updateThumbnails = () => {
-    const thumbnailContainer = document.querySelector('.thumbnail-images');
-    const mainProductImage = document.getElementById('main-product-image');
-
-    if (!thumbnailContainer || !mainProductImage) return;
-
-    thumbnailContainer.innerHTML = '';
-    const modelData = productModels[currentModel];
-    const colorData = modelData.colors[selectedColor];
-
-    colorData.thumbnails.forEach((thumbSrc, index) => {
-        const thumb = document.createElement('img');
-        thumb.className = `thumbnail ${index === 0 ? 'active' : ''}`;
-        thumb.src = thumbSrc;
-
-        thumb.addEventListener('click', () => {
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-            mainProductImage.src = thumbSrc;
-        });
-
-        thumbnailContainer.appendChild(thumb);
-    });
-
-    if (colorData.thumbnails.length > 0) {
-        mainProductImage.src = colorData.thumbnails[0];
+    // --- Color Saving Helpers ---
+    function saveColorSelection(model, color) {
+        localStorage.setItem('savedColor_' + model, color);
     }
-};
 
+    function getSavedColor(model) {
+        return localStorage.getItem('savedColor_' + model);
+    }
 
-// --------------------------------------
-//       UPDATE PRODUCT DISPLAY
-// --------------------------------------
-const updateProductDisplay = () => {
-    createColorButtons();
-    createSizeButtons();
-    updateThumbnails();
-    updateProductInfo();
-};
+    // --- Helper Functions ---
 
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-// --------------------------------------
-//                SWITCH MODEL
-// --------------------------------------
-const switchModel = (model) => {
-    currentModel = model;
-    const modelData = productModels[model];
+    const updateProductInfo = () => {
+        const modelData = productModels[currentModel];
+        if (productTitle) productTitle.textContent = modelData.name;
+        if (productPrice)
+            productPrice.textContent = `${modelData.price.toLocaleString('ar-DZ')} د.ج`;
+        if (productDescription) productDescription.textContent = modelData.description;
+    };
 
-    const savedColor = getSavedColor(model);
-    selectedColor = savedColor || Object.keys(modelData.colors)[0];
-    selectedSize = modelData.colors[selectedColor].availableSizes[0];
+    const getColorGradient = (color) => {
+        const gradients = {
+            'blue': '#1e3c72, #2a5298',
+            'green': '#2e8b57, #3cb371',
+            'yellow': '#ffd700, #ffec8b'
+        };
+        return gradients[color] || '#000000, #333333';
+    };
 
-    updateProductDisplay();
+    const getColorBorder = (color) => {
+        const borders = {
+            'blue': '#1e3c72',
+            'green': '#2e8b57',
+            'yellow': '#ffd700'
+        };
+        return borders[color] || '#000000';
+    };
 
-    const modelButtons = document.querySelectorAll('.model-btn');
-    modelButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.model === model) btn.classList.add('active');
-    });
+    // --- Updated createColorButtons ---
+    const createColorButtons = () => {
+        colorContainer.innerHTML = '';
+        const modelData = productModels[currentModel];
+        
+        Object.entries(modelData.colors).forEach(([colorKey, colorData]) => {
+            const button = document.createElement('button');
+            button.className = `color-btn ${colorKey === selectedColor ? 'active' : ''}`;
+            button.dataset.color = colorKey;
+            button.textContent = colorData.name;
 
-    window.dispatchEvent(new CustomEvent('modelChanged', { detail: { model: currentModel } }));
+            if (['blue', 'green', 'yellow'].includes(colorKey)) {
+                button.style.background = `linear-gradient(135deg, ${getColorGradient(colorKey)})`;
+                button.style.color = colorKey === 'yellow' ? 'var(--text-color)' : 'var(--white)';
+                button.style.borderColor = getColorBorder(colorKey);
+            }
 
-    if (typeof trackTikTokViewContent !== 'undefined') {
-        trackTikTokViewContent({
+            button.addEventListener('click', () => {
+                selectedColor = colorKey;
+
+                // ⭐ Save user's chosen color
+                saveColorSelection(currentModel, selectedColor);
+
+                updateProductDisplay();
+                scrollToTop();
+            });
+
+            colorContainer.appendChild(button);
+        });
+    };
+
+    const createSizeButtons = () => {
+        sizeContainer.innerHTML = '';
+        const modelData = productModels[currentModel];
+        const colorData = modelData.colors[selectedColor];
+        
+        colorData.availableSizes.forEach(size => {
+            const button = document.createElement('button');
+            button.className = `size-btn ${size === selectedSize ? 'active' : ''}`;
+            button.dataset.size = size;
+            button.textContent = size;
+            
+            button.addEventListener('click', () => {
+                if (!button.classList.contains('disabled')) {
+                    document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    selectedSize = size;
+                }
+            });
+            
+            sizeContainer.appendChild(button);
+        });
+    };
+
+    const updateThumbnails = () => {
+        thumbnailContainer.innerHTML = '';
+        const modelData = productModels[currentModel];
+        const colorData = modelData.colors[selectedColor];
+        
+        colorData.thumbnails.forEach((thumbSrc, index) => {
+            const thumb = document.createElement('img');
+            thumb.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+            thumb.src = thumbSrc;
+            thumb.alt = `Thumbnail ${index + 1}`;
+            
+            thumb.addEventListener('click', () => {
+                document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                mainProductImage.src = thumbSrc;
+            });
+            
+            thumbnailContainer.appendChild(thumb);
+        });
+
+        if (colorData.thumbnails.length > 0) {
+            mainProductImage.src = colorData.thumbnails[0];
+        }
+    };
+
+    // --- Updated updateProductDisplay ---
+    const updateProductDisplay = () => {
+        createColorButtons();
+        createSizeButtons();
+        updateThumbnails();
+
+        if (productPrice) {
+            const modelData = productModels[currentModel];
+            productPrice.textContent = `${modelData.price.toLocaleString('ar-DZ')} د.ج`;
+        }
+    };
+
+    // --- Updated switchModel ---
+    const switchModel = (model) => {
+        currentModel = model;
+        const modelData = productModels[model];
+
+        const savedColor = getSavedColor(model);
+        selectedColor = savedColor || Object.keys(modelData.colors)[0];
+        selectedSize = modelData.colors[selectedColor].availableSizes[0];
+
+        updateProductInfo();
+        updateProductDisplay();
+
+        modelButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.model === model) btn.classList.add('active');
+        });
+
+        trackViewContent({
             id: `${currentModel}-${selectedColor}-${selectedSize}`,
             model: currentModel,
             color: selectedColor,
@@ -362,129 +377,102 @@ const switchModel = (model) => {
             name: modelData.name,
             price: modelData.price
         });
-    }
-};
+    };
 
-
-// --------------------------------------
-//         CART FUNCTIONS
-// --------------------------------------
-const updateGlobalCartCount = () => {
-    const cartCountElement = document.querySelector('.cart-count');
-    if (cartCountElement) {
+    const updateGlobalCartCount = () => {
         const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCountElement.textContent = total;
+        if (cartCountElement) cartCountElement.textContent = total;
+    };
+
+    const saveCartToLocalStorage = () => {
+        localStorage.setItem('qudwahCart', JSON.stringify(cart));
+    };
+
+    // --- TikTok Tracking ---
+    function trackViewContent(product) {
+        if (typeof trackTikTokViewContent !== 'undefined') {
+            trackTikTokViewContent(product);
+        }
     }
-};
 
-const saveCartToLocalStorage = () => {
-    localStorage.setItem('qudwahCart', JSON.stringify(cart));
-};
-
-function trackAddToCart(product) {
-    if (typeof trackTikTokAddToCart !== 'undefined') {
-        trackTikTokAddToCart(product);
+    function trackAddToCart(product) {
+        if (typeof trackTikTokAddToCart !== 'undefined') {
+            trackTikTokAddToCart(product);
+        }
     }
-}
 
+    // --- Events ---
 
-// --------------------------------------
-//              DOM LOADED
-// --------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Load saved color
-    const savedColor = getSavedColor(currentModel);
-    if (savedColor) selectedColor = savedColor;
-
-    // Model buttons
-    document.querySelectorAll('.model-btn').forEach(button => {
-        button.addEventListener('click', () => switchModel(button.dataset.model));
+    modelButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            switchModel(button.dataset.model);
+        });
     });
 
-    // Quantity buttons
-    const quantityInput = document.querySelector('.quantity-input');
-    const minusBtn = document.querySelector('.quantity-btn.minus');
-    const plusBtn = document.querySelector('.quantity-btn.plus');
+    minusBtn.addEventListener('click', () => {
+        const val = parseInt(quantityInput.value);
+        if (val > 1) quantityInput.value = val - 1;
+    });
 
-    if (minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', () => {
-            const val = parseInt(quantityInput.value);
-            if (val > 1) quantityInput.value = val - 1;
+    plusBtn.addEventListener('click', () => {
+        const val = parseInt(quantityInput.value);
+        quantityInput.value = val + 1;
+    });
+
+    quantityInput.addEventListener('change', () => {
+        const val = parseInt(quantityInput.value);
+        if (isNaN(val) || val < 1) quantityInput.value = 1;
+    });
+
+    addToCartBtn.addEventListener('click', () => {
+        const quantity = parseInt(quantityInput.value);
+        const modelData = productModels[currentModel];
+        const productId = `${currentModel}-${selectedColor}-${selectedSize}`;
+        const colorName = modelData.colors[selectedColor].name;
+
+        const existingIndex = cart.findIndex(item => item.id === productId);
+        if (existingIndex > -1) {
+            cart[existingIndex].quantity += quantity;
+        } else {
+            cart.push({
+                id: productId,
+                name: modelData.name,
+                model: currentModel,
+                color: colorName,
+                size: selectedSize,
+                price: modelData.price,
+                quantity,
+                image: modelData.colors[selectedColor].main
+            });
+        }
+
+        saveCartToLocalStorage();
+        updateGlobalCartCount();
+
+        trackAddToCart({
+            id: productId,
+            name: modelData.name,
+            price: modelData.price,
+            quantity: quantity
         });
 
-        plusBtn.addEventListener('click', () => {
-            quantityInput.value = parseInt(quantityInput.value) + 1;
-        });
+        alert(`تم إضافة ${quantity} قطعة من المنتج إلى السلة!`);
+    });
 
-        quantityInput.addEventListener('change', () => {
-            if (isNaN(quantityInput.value) || quantityInput.value < 1) quantityInput.value = 1;
-        });
-    }
-
-    // Add to cart
-    const addToCartBtn = document.querySelector('.add-to-cart-btn');
-    if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', () => {
-            const quantity = parseInt(quantityInput.value) || 1;
-            const modelData = productModels[currentModel];
-            const productId = `${currentModel}-${selectedColor}-${selectedSize}`;
-
-            const existingIndex = cart.findIndex(item => item.id === productId);
-
-            if (existingIndex > -1) {
-                cart[existingIndex].quantity += quantity;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: modelData.name,
-                    model: currentModel,
-                    color: modelData.colors[selectedColor].name,
-                    size: selectedSize,
-                    price: modelData.price,
-                    quantity,
-                    image: modelData.colors[selectedColor].main
-                });
-            }
-
-            saveCartToLocalStorage();
-            updateGlobalCartCount();
-            trackAddToCart({ id: productId, name: modelData.name, price: modelData.price, quantity });
-
-            alert(`تم إضافة ${quantity} قطعة من المنتج إلى السلة!`);
-        });
-    }
-
-    // Quick order effect
-    const quickOrderBtn = document.querySelector('.quick-order-btn');
-    if (quickOrderBtn) {
-        quickOrderBtn.addEventListener('click', () => {
-            const card = document.getElementById('quick-order-card');
-            if (card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                card.style.transition = 'all 0.5s ease';
-                card.style.boxShadow = '0 0 0 3px rgba(0, 123, 255, 0.5)';
-                setTimeout(() => card.style.boxShadow = 'var(--box-shadow)', 1500);
-            }
-        });
-    }
-
+    // --- Initialization ---
+    updateProductInfo();
     updateProductDisplay();
     updateGlobalCartCount();
 
-    if (typeof trackTikTokViewContent !== 'undefined') {
-        trackTikTokViewContent({
-            id: `${currentModel}-${selectedColor}-${selectedSize}`,
-            model: currentModel,
-            color: selectedColor,
-            size: selectedSize,
-            name: productModels[currentModel].name,
-            price: productModels[currentModel].price
-        });
-    }
+    trackViewContent({
+        id: `${currentModel}-${selectedColor}-${selectedSize}`,
+        model: currentModel,
+        color: selectedColor,
+        size: selectedSize,
+        name: productModels[currentModel].name,
+        price: productModels[currentModel].price
+    });
 });
 
-// expose globally
+// Make available for quick-order.js
 window.currentModel = currentModel;
-window.productModels = productModels;
-
