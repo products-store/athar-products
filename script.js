@@ -546,26 +546,4 @@ switchModel = (model) => {
 };
 
 
-// --- جعل currentModel متاحاً عالمياً ---
-// تعريف currentModel في النطاق العام أولاً
-window.currentModel = 'model1';
 
-// تحديث window.currentModel عند تغيير الموديل
-const originalSwitchModel = window.switchModel;
-if (originalSwitchModel) {
-    window.switchModel = (model) => {
-        originalSwitchModel(model);
-        window.currentModel = model;
-        
-        // إرسال حدث لتحديث quick-order.js
-        const modelChangedEvent = new CustomEvent('modelChanged', {
-            detail: { model: model }
-        });
-        document.dispatchEvent(modelChangedEvent);
-    };
-}
-
-// تحديث window.currentModel عند تغيير اللون
-function updateCurrentModel() {
-    window.currentModel = currentModel;
-}
