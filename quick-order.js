@@ -215,13 +215,11 @@ const sendToDiscordWebhook = async (order) => {
     ).join('\n');
 
     // دالة مساعدة للحصول على اسم الموديل
-    function getModelName(modelKey) {
-        const modelNames = {
-            'model1': ' 1',
-            'model2': ' 2'
-        };
-        return modelNames[modelKey] || modelKey;
-    }
+function getModelName(modelKey) {
+    // إذا كان المفتاح يحتوي على الرقم "2" في أي مكان، فهو الموديل 2
+    // إذا لم يحتوي على "2"، فهو الموديل 1
+    return modelKey.includes('2') ? '2' : '1';
+}
 
     const deliveryMethodText = order.shippingInfo.deliveryMethod === 'home' 
         ? `التوصيل إلى المنزل (${order.shippingInfo.commune})`
@@ -501,5 +499,6 @@ if (typeof trackTikTokPurchase !== 'undefined') {
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
 
 });
+
 
 
