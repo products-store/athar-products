@@ -209,17 +209,9 @@ const getCurrentProductPrice = () => {
     // Send data to Discord webhook
 // في دالة sendToDiscordWebhook، قم بتحديث جزء المنتجات:
 const sendToDiscordWebhook = async (order) => {
-    // إنشاء قائمة المنتجات بشكل منظم مع تحديد الموديل
-    const orderItemsList = order.items.map(item => 
-        `${item.name} (موديل: ${getModelName(item.model)}, ${item.color}، ${item.size}) × ${item.quantity} = ${(item.price * item.quantity).toLocaleString('ar-DZ')} د.ج`
-    ).join('\n');
-
-    // دالة مساعدة للحصول على اسم الموديل
-function getModelName(modelKey) {
-    // إذا كان المفتاح يحتوي على الرقم "2" في أي مكان، فهو الموديل 2
-    // إذا لم يحتوي على "2"، فهو الموديل 1
-    return modelKey.includes('2') ? '2' : '1';
-}
+const orderItemsList = order.items.map(item => 
+    `${item.name} (موديل: ${item.model === 'model1' ? '1' : item.model === 'model2' ? '2' : item.model}, ${item.color}، ${item.size}) × ${item.quantity} = ${(item.price * item.quantity).toLocaleString('ar-DZ')} د.ج`
+).join('\n');
 
     const deliveryMethodText = order.shippingInfo.deliveryMethod === 'home' 
         ? `التوصيل إلى المنزل (${order.shippingInfo.commune})`
@@ -499,6 +491,7 @@ if (typeof trackTikTokPurchase !== 'undefined') {
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
 
 });
+
 
 
 
