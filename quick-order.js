@@ -208,27 +208,34 @@ const getCurrentProductPrice = () => {
 
 // Send data to Discord webhook
 const sendToDiscordWebhook = async (order) => {
-    // إنشاء قائمة المنتجات بشكل منظم مع تحديد الموديل
-    const orderItemsList = order.items.map(item => {
-        // تحديد الموديل بناءً على الـ ID إذا لم تكن خاصية model موجودة
-        let modelNumber = '1'; // القيمة الافتراضية
+    // دالة مساعدة موثوقة للحصول على اسم الموديل
+    const getModelNumberFromItem = (item) => {
+        // الطريقة الأفضل: استخدام خاصية model مباشرة إذا كانت موجودة
+        if (item.model && typeof item.model === 'string') {
+            if (item.model === 'model2') return '2';
+            if (item.model === 'model1') return '1';
+        }
         
-        if (item.model) {
-            // إذا كانت خاصية model موجودة
-            modelNumber = item.model === 'model2' ? '2' : '1';
-        } else if (item.id) {
-            // استخراج الموديل من الـ ID
+        // طريقة احتياطية: من الـ ID
+        if (item.id && typeof item.id === 'string') {
+            // قسمة الـ ID إلى أجزاء
             const parts = item.id.split('-');
-            if (parts[0].includes('model2')) {
-                modelNumber = '2';
-            } else if (parts[0].includes('model1')) {
-                modelNumber = '1';
+            if (parts.length > 0) {
+                const firstPart = parts[0];
+                if (firstPart === 'model2') return '2';
+                if (firstPart === 'model1') return '1';
             }
         }
         
+        // القيمة الافتراضية
+        return '1';
+    };
+
+    // إنشاء قائمة المنتجات بشكل منظم مع تحديد الموديل
+    const orderItemsList = order.items.map(item => {
+        const modelNumber = getModelNumberFromItem(item);
         return `${item.name} (موديل: ${modelNumber}, ${item.color}، ${item.size}) × ${item.quantity} = ${(item.price * item.quantity).toLocaleString('ar-DZ')} د.ج`;
     }).join('\n');
-
 
     const deliveryMethodText = order.shippingInfo.deliveryMethod === 'home' 
         ? `التوصيل إلى المنزل (${order.shippingInfo.commune})`
@@ -297,7 +304,6 @@ const sendToDiscordWebhook = async (order) => {
         return false;
     }
 };
-
     // --- Event Listeners and Initial Setup ---
 
     // Populate wilayas on page load
@@ -508,6 +514,7 @@ if (typeof trackTikTokPurchase !== 'undefined') {
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
 
 });
+
 
 
 
