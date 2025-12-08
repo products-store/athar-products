@@ -206,12 +206,29 @@ const getCurrentProductPrice = () => {
         updateOrderTotals();
     };
 
-    // Send data to Discord webhook
-// في دالة sendToDiscordWebhook، قم بتحديث جزء المنتجات:
+// Send data to Discord webhook
 const sendToDiscordWebhook = async (order) => {
-const orderItemsList = order.items.map(item => 
-    `${item.name} (موديل: ${item.model === 'model1' ? '1' : item.model === 'model2' ? '2' : item.model}, ${item.color}، ${item.size}) × ${item.quantity} = ${(item.price * item.quantity).toLocaleString('ar-DZ')} د.ج`
-).join('\n');
+    // إنشاء قائمة المنتجات بشكل منظم مع تحديد الموديل
+    const orderItemsList = order.items.map(item => {
+        // تحديد الموديل بناءً على الـ ID إذا لم تكن خاصية model موجودة
+        let modelNumber = '1'; // القيمة الافتراضية
+        
+        if (item.model) {
+            // إذا كانت خاصية model موجودة
+            modelNumber = item.model === 'model2' ? '2' : '1';
+        } else if (item.id) {
+            // استخراج الموديل من الـ ID
+            const parts = item.id.split('-');
+            if (parts[0].includes('model2')) {
+                modelNumber = '2';
+            } else if (parts[0].includes('model1')) {
+                modelNumber = '1';
+            }
+        }
+        
+        return `${item.name} (موديل: ${modelNumber}, ${item.color}، ${item.size}) × ${item.quantity} = ${(item.price * item.quantity).toLocaleString('ar-DZ')} د.ج`;
+    }).join('\n');
+
 
     const deliveryMethodText = order.shippingInfo.deliveryMethod === 'home' 
         ? `التوصيل إلى المنزل (${order.shippingInfo.commune})`
@@ -491,6 +508,7 @@ if (typeof trackTikTokPurchase !== 'undefined') {
     quickCommuneInput.addEventListener('input', saveInfoOnInput);
 
 });
+
 
 
 
