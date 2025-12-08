@@ -102,7 +102,7 @@ const productModels = {
         description: "قميص شتوي رجالي يعكس أناقة التفاصيل ورقيّ الاختيار. قميصنا يجمع بين الاناقة في اللباس والاتقان في التصميم والخياطة مع جودة قماش جيدة تناسبك في فصل الشتاء",
         colors: {
             'dark-gray': {
-                name: 'رصاصي داكن',
+                name: 'رصاصي  داكن',
                 main: 'images/dark-gray-4.webp',
                 thumbnails: [
                     'images/dark-gray-4.webp',
@@ -114,7 +114,7 @@ const productModels = {
                 availableSizes: ['52', '54', '56', '58']
             },
             'blue-petrol': {
-                name: 'بلو بيترول',
+                name: 'بلو  بيترول',
                 main: 'images/blue-petrol-1.webp',
                 thumbnails: [
                     'images/blue-petrol-1.webp',
@@ -127,7 +127,7 @@ const productModels = {
             },
 
             'blue-far': {
-                name: 'بلو فار',
+                name: 'بلو  فار',
                 main: 'images/blue-far2-1.webp',
                 thumbnails: [
                     'images/blue-far2-1.webp',
@@ -139,7 +139,7 @@ const productModels = {
             },
 
             'gray2': {
-                name: 'رمادي',
+                name: ' رمادي',
                 main: 'images/gray2-1.webp',
                 thumbnails: [
                     'images/gray2-1.webp',
@@ -150,7 +150,7 @@ const productModels = {
                 availableSizes: ['52', '54', '56', '58']
             },
             'beige': {
-                name: 'باج',
+                name: ' باج',
                 main: 'images/beige-1.webp',
                 thumbnails: [
                     'images/beige-1.webp',
@@ -161,7 +161,7 @@ const productModels = {
                 availableSizes: ['52', '54', '56', '58']
             },
             'dark-purple': {
-                name: 'بنفسجي داكن',
+                name: 'بنفسجي  داكن',
                 main: 'images/dark-purple-1.webp',
                 thumbnails: [
                     'images/dark-purple-1.webp',
@@ -173,7 +173,7 @@ const productModels = {
             },
 
 'blue-jeans': {
-    name: 'بلو جينز',
+    name: 'بلو  جينز',
     main: 'images/blue-jeans-1.webp',
     thumbnails: [
         'images/blue-jeans-1.webp',
@@ -184,7 +184,7 @@ const productModels = {
     availableSizes: ['52', '54', '56', '58']
 },
 'white': {
-    name: 'أبيض',
+    name: ' أبيض',
     main: 'images/white-1.webp',
     thumbnails: [
         'images/white-1.webp',
@@ -199,7 +199,7 @@ const productModels = {
 
 
 'dark-gray4': {
-    name: 'رمادي داكن',
+    name: 'رمادي   داكن',
     main: 'images/dark-gray4-1.webp',
     thumbnails: [
         'images/dark-gray4-1.webp',
@@ -210,7 +210,7 @@ const productModels = {
     availableSizes: ['52', '54', '56', '58']
 },
 'gray': {
-    name: 'رمادي فاتح',
+    name: 'رمادي  فاتح',
     main: 'images/gray-1.webp',
     thumbnails: [
         'images/gray-1.webp',
@@ -222,7 +222,7 @@ const productModels = {
 },
 
             'brown': {
-                name: 'بني',
+                name: ' بني',
                 main: 'images/brown-1.webp',
                 thumbnails: [
                     'images/brown-1.webp',
@@ -544,6 +544,7 @@ switchModel = (model) => {
     document.dispatchEvent(modelChangedEvent);
 
 };
+
 
 
 
