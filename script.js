@@ -221,6 +221,19 @@ const productModels = {
     availableSizes: ['52', '54', '56', '58']
 },
 
+            
+'dark-gray5': {
+    name: 'رمادي  داكن ',
+    main: 'images/dark-gray5-1.webp',
+    thumbnails: [
+        'images/dark-gray5-1.webp',
+        'images/dark-gray5-2.webp',
+        'images/dark-gray5-3.webp',
+        'images/dark-gray5-4.webp'
+    ],
+    availableSizes: ['52', '54', '56', '58']
+},
+            
             'brown': {
                 name: ' بني',
                 main: 'images/brown-1.webp',
@@ -544,6 +557,7 @@ switchModel = (model) => {
     document.dispatchEvent(modelChangedEvent);
 
 };
+
 
 
 
