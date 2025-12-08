@@ -2245,4 +2245,16 @@ button:hover {
 .color-btn[data-color="dark-gray4"].active {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+
+}
+
+.color-btn[data-color="dark-gray5"] {
+    background: #2d2e30;
+    color: var(--white);
+    border-color: #2d2e30;
+}
+.color-btn[data-color="dark-gray5"].active {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+
 }
