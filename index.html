@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATHAR</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/logo.jpg" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.jpg" alt="ATHAR Logo">
+                <span>ATHAR</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="about.html">من نحن</a></li>
+                    <li><a href="contact.html">تواصل معنا</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="cart.html" class="cart-icon">
+                    <img src="images/cart-icon.png" alt="Cart">
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="hamburger-menu">
+                    &#9776;
+                </button>
+            </div>
+        </div>
+        <div class="mobile-nav-overlay">
+            <nav class="mobile-nav">
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="about.html">من نحن</a></li>
+                    <li><a href="contact.html">تواصل معنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+
+
+
+
+
+    <!-- أزرار التبديل بين الموديلين -->
+<div class="model-selector-container">
+    <div class="container">
+        <div class="model-buttons">
+            <button class="model-btn active" data-model="model1">موديل 1</button>
+            <button class="model-btn" data-model="model2">موديل 2</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    <main class="product-page">
+        <div class="container product-details-wrapper">
+<section class="product-images">
+    <div class="main-image-container">
+        <img id="main-product-image" src="images/olive-green-1.webp" alt="قميص رجالي - أسود">
+    </div>
+
+    <div class="thumbnail-images">
+        <img class="thumbnail active" src="images/olive-green-1.webp" alt="Thumbnail 1">
+        <img class="thumbnail" src="images/olive-green-2.webp" alt="Thumbnail 2">
+        <img class="thumbnail" src="images/olive-green-3.webp" alt="Thumbnail 3">
+        <img class="thumbnail" src="images/olive-green-4.webp" alt="Thumbnail 4">
+        <img class="thumbnail" src="images/olive-green-5.webp" alt="Thumbnail 5">
+    </div>
+</section>
+
+<section class="product-info">
+    <!-- تم نقل السعر إلى مكان العنوان -->
+    <p class="product-price compact-price">4800 د.ج</p>
+
+    <div class="color-options compact-section">
+        <h2>الألوان المتوفرة:</h2>
+        <div class="colors">
+            <!-- سيتم ملء الألوان ديناميكياً -->
+        </div>
+    </div>
+
+    <div class="size-options compact-section">
+        <h2>المقاسات:</h2>
+        <div class="sizes">
+            <!-- سيتم ملء المقاسات ديناميكياً -->
+        </div>
+    </div>
+
+    <div class="quantity-selector compact-section">
+        <h2>الكمية:</h2>
+        <div class="quantity-control">
+            <button class="quantity-btn minus">-</button>
+            <input type="number" class="quantity-input" value="1" min="1">
+            <button class="quantity-btn plus">+</button>
+        </div>
+    </div>
+
+    <div class="action-buttons compact-buttons">
+        <button class="quick-order-btn">اشتري الآن</button>
+        <button class="add-to-cart-btn">أضف إلى السلة</button>
+    </div>
+
+    <!-- تم نقل الوصف إلى الأسفل -->
+    <div class="product-description compact-description">
+        <h2>وصف المنتج:</h2>
+        <p>قميص يجمع بين البساطة والفخامة في تفاصيل دقيقة تليق بالرجل الأنيق.</p>
+        <p>تصميم عصري يعكس الذوق الرفيع، وخامة جميلة تمنحك راحة وأناقة في كل لحظة.</p>
+        <p>خيارك المثالي لإطلالة راقية تجمع بين الحداثة والوقار، بأسلوب يعبّر عن أناقتك وتميّزك.</p>
+    </div>
+</section>
+        </div>
+
+        <!-- إضافة بطاقة الطلب المباشر -->
+        <div class="container quick-order-container">
+            <div class="quick-order-card" id="quick-order-card">
+                <h2 class="page-title">الطلب المباشر</h2>
+
+                <form id="quick-order-form">
+                    <div class="form-group">
+                        <label for="quick-fullName">الاسم الكامل:</label>
+                        <input type="text" id="quick-fullName" name="fullName" required placeholder="ادخل اسمك الكامل">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quick-phone">رقم الهاتف الأساسي:</label>
+                        <input type="tel" id="quick-phone" name="phone" required placeholder="رقم هاتفك">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quick-alternativePhone">رقم هاتف احتياطي (اختياري):</label>
+                        <input type="tel" id="quick-alternativePhone" name="alternativePhone" placeholder="اختياري">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quick-wilaya">الولاية:</label>
+                        <select id="quick-wilaya" name="wilaya" required>
+                            <option value="">اختر ولايتك</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <h4>التوصيل مع شركة : ZR Express</h4>
+                        <div class="radio-group-container">
+                            <div class="radio-group">
+                                <input type="radio" id="quick-deliveryToOffice" name="deliveryMethod" value="office" checked>
+                                <label for="quick-deliveryToOffice">توصيل للمكتب</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="quick-deliveryToHome" name="deliveryMethod" value="home">
+                                <label for="quick-deliveryToHome">توصيل للمنزل</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="quick-commune-group" style="display: none;">
+                        <label for="quick-commune">البلدية:</label>
+                        <input type="text" id="quick-commune" name="commune" placeholder="ادخل اسم بلديتك">
+                    </div>
+
+                    <div class="order-summary">
+                        <h2>ملخص الطلب:</h2>
+                        <div class="summary-row">
+                            <span>سعر المنتجات:</span>
+                            <span id="quick-products-subtotal">0 د.ج</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>سعر التوصيل:</span>
+                            <span id="quick-delivery-price">0 د.ج</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>الإجمالي الكلي:</span>
+                            <span id="quick-order-grand-total">0 د.ج</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-order-btn">تأكيد الطلب</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="cart.js"></script>
+    <script src="quick-order.js"></script>
+    <script src="header.js"></script>
+    <script src="tiktok-pixel.js"></script>
+    <script src="tiktok-events.js"></script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
