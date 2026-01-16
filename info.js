@@ -52,7 +52,7 @@ const wilayaPrices = [
     { name: 'عين تموشنت', home: 900, office: 570, cancel: 200 },
     { name: 'غرداية', home: 950, office: 670, cancel: 200 },
     { name: 'غليزان', home: 900, office: 570, cancel: 200 },
-    { name: 'تيميمون', home: 1450, office: null, cancel: 250 },
+    { name: 'تيميمون', home: 1450, office: 1070, cancel: 250 },
     { name: 'برج باجي مختار', home: null, office: null, cancel: null },
     { name: 'أولاد جلال', home: 950, office: 670, cancel: 200 },
     { name: 'بني عباس', home: 1100, office: 1070, cancel: 250 },
@@ -161,39 +161,106 @@ function trackTikTokPurchase(order) {
     };
 
     // Calculate and update delivery price and grand total
-    const updateOrderTotals = () => {
-        let currentTotal = productsTotalPrice;
-        currentDeliveryPrice = 0;
+const updateOrderTotals = () => {
+    let currentTotal = productsTotalPrice;
+    currentDeliveryPrice = 0;
 
-        if (selectedWilayaData) {
-            // Check if selected delivery method is available for the wilaya
+    if (selectedWilayaData) {
+        // حساب الكمية الإجمالية من السلة
+        let totalQuantity = 0;
+        cart.forEach(item => {
+            totalQuantity += item.quantity;
+        });
+        
+        // التحقق من الشروط للتوصيل المجاني
+        const isSouthernWilaya = ['تمنراست', 'أدرار', 'تيميمون'].includes(selectedWilayaData.name);
+        const isOfficeDelivery = selectedDeliveryMethod === 'office';
+        
+        let isFreeDelivery = false;
+        
+        // تطبيق شروط التوصيل المجاني
+        if (isOfficeDelivery) {
+            if (!isSouthernWilaya && totalQuantity >= 2) {
+                // الولايات الساحلية والداخلية: قطعتين أو أكثر للتوصيل المجاني
+                isFreeDelivery = true;
+            } else if (isSouthernWilaya && totalQuantity >= 3) {
+                // الولايات الجنوبية: ثلاث قطع أو أكثر للتوصيل المجاني
+                isFreeDelivery = true;
+            }
+        }
+        
+        if (isFreeDelivery) {
+            // التوصيل مجاني
+            currentDeliveryPrice = 0;
+            
+            // إظهار رسالة للمستخدم
+            const existingMessage = document.querySelector('.free-delivery-message');
+            if (!existingMessage) {
+                const message = document.createElement('div');
+                message.className = 'free-delivery-message';
+                message.style.backgroundColor = '#d4edda';
+                message.style.color = '#155724';
+                message.style.padding = '10px';
+                message.style.borderRadius = '5px';
+                message.style.marginTop = '10px';
+                message.style.fontSize = '14px';
+                message.style.textAlign = 'center';
+                message.textContent = '🎉 التوصيل مجاني!';
+                
+                // إضافة الرسالة بعد سعر التوصيل
+                const deliveryPriceElement = deliveryPriceElement.parentElement;
+                deliveryPriceElement.parentElement.appendChild(message);
+            }
+        } else {
+            // حساب سعر التوصيل العادي
             if (selectedDeliveryMethod === 'office' && selectedWilayaData.office === null) {
                 alert(`التوصيل للمكتب غير متاح في ولاية ${selectedWilayaData.name}. سيتم تحويلك إلى التوصيل للمنزل.`);
                 deliveryToHomeRadio.checked = true;
                 selectedDeliveryMethod = 'home';
             }
 
-            if (selectedDeliveryMethod === 'home') {
+            if (selectedWilayaData && selectedWilayaData.name === 'إليزي') {
+                alert('نعتذر، التوصيل غير متاح لهذه الولاية حالياً.');
+                wilayaSelect.value = '';
+                selectedWilayaData = null;
+                currentDeliveryPrice = 0;
+                communeGroup.style.display = 'none';
+                communeInput.removeAttribute('required');
+                communeInput.value = '';
+            } else if (selectedDeliveryMethod === 'home') {
                 currentDeliveryPrice = selectedWilayaData.home;
-                communeGroup.style.display = 'block'; // Show commune field for home delivery
+                communeGroup.style.display = 'block';
                 communeInput.setAttribute('required', 'true');
             } else { // 'office'
                 currentDeliveryPrice = selectedWilayaData.office;
-                communeGroup.style.display = 'none'; // Hide commune field for office delivery
+                communeGroup.style.display = 'none';
                 communeInput.removeAttribute('required');
-                communeInput.value = ''; // Clear commune input
+                communeInput.value = '';
             }
-        } else {
-            // No wilaya selected, hide commune field and set delivery price to 0
-            communeGroup.style.display = 'none';
-            communeInput.removeAttribute('required');
-            communeInput.value = '';
+            
+            // إزالة رسالة التوصيل المجاني إذا كانت موجودة
+            const existingMessage = document.querySelector('.free-delivery-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
         }
+    } else {
+        // No wilaya selected, hide commune field and set delivery price to 0
+        communeGroup.style.display = 'none';
+        communeInput.removeAttribute('required');
+        communeInput.value = '';
+        
+        // إزالة رسالة التوصيل المجاني إذا كانت موجودة
+        const existingMessage = document.querySelector('.free-delivery-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+    }
 
-        currentTotal += currentDeliveryPrice;
-        deliveryPriceElement.textContent = `${currentDeliveryPrice.toLocaleString('ar-DZ')} د.ج`;
-        orderGrandTotalElement.textContent = `${currentTotal.toLocaleString('ar-DZ')} د.ج`;
-    };
+    currentTotal += currentDeliveryPrice;
+    deliveryPriceElement.textContent = `${currentDeliveryPrice.toLocaleString('ar-DZ')} د.ج`;
+    orderGrandTotalElement.textContent = `${currentTotal.toLocaleString('ar-DZ')} د.ج`;
+};
 
 
 
