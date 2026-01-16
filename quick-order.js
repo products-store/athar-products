@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'عين تموشنت', home: 900, office: 570, cancel: 200 },
         { name: 'غرداية', home: 950, office: 670, cancel: 200 },
         { name: 'غليزان', home: 900, office: 570, cancel: 200 },
-        { name: 'تيميمون', home: 1450, office: null, cancel: 250 },
+        { name: 'تيميمون', home: 1450, office: 1070, cancel: 250 },
         { name: 'أولاد جلال', home: 950, office: 670, cancel: 200 },
         { name: 'بني عباس', home: 1100, office: 1070, cancel: 250 },
         { name: 'عين صالح', home: 1650, office: null, cancel: 250 },
@@ -170,37 +170,102 @@ function trackTikTokPurchase(order) {
     };
 
     // Calculate and update delivery price and grand total
-    const updateOrderTotals = () => {
-        let currentTotal = calculateProductsSubtotal();
-        currentDeliveryPrice = 0;
+const updateOrderTotals = () => {
+    let currentTotal = calculateProductsSubtotal();
+    currentDeliveryPrice = 0;
 
-        if (selectedWilayaData) {
+    if (selectedWilayaData) {
+        // الحصول على الكمية من حقل الكمية
+        const quantity = parseInt(quantityInput.value) || 1;
+        
+        // التحقق من الشروط للتوصيل المجاني
+        const isSouthernWilaya = ['تمنراست', 'أدرار', 'تيميمون'].includes(selectedWilayaData.name);
+        const isOfficeDelivery = selectedDeliveryMethod === 'office';
+        
+        let isFreeDelivery = false;
+        
+        // تطبيق شروط التوصيل المجاني
+        if (isOfficeDelivery) {
+            if (!isSouthernWilaya && quantity >= 2) {
+                // الولايات الساحلية والداخلية: قطعتين أو أكثر للتوصيل المجاني
+                isFreeDelivery = true;
+            } else if (isSouthernWilaya && quantity >= 3) {
+                // الولايات الجنوبية: ثلاث قطع أو أكثر للتوصيل المجاني
+                isFreeDelivery = true;
+            }
+        }
+        
+        if (isFreeDelivery) {
+            // التوصيل مجاني
+            currentDeliveryPrice = 0;
+            
+            // إظهار رسالة للمستخدم
+            const existingMessage = document.querySelector('.free-delivery-message');
+            if (!existingMessage) {
+                const message = document.createElement('div');
+                message.className = 'free-delivery-message';
+                message.style.backgroundColor = '#d4edda';
+                message.style.color = '#155724';
+                message.style.padding = '10px';
+                message.style.borderRadius = '5px';
+                message.style.marginTop = '10px';
+                message.style.fontSize = '14px';
+                message.style.textAlign = 'center';
+                message.textContent = '🎉 التوصيل مجاني!';
+                
+                // إضافة الرسالة بعد سعر التوصيل
+                const deliveryPriceElement = quickDeliveryPriceElement.parentElement;
+                deliveryPriceElement.parentElement.appendChild(message);
+            }
+        } else {
+            // حساب سعر التوصيل العادي
             if (selectedDeliveryMethod === 'office' && selectedWilayaData.office === null) {
                 alert(`التوصيل للمكتب غير متاح في ولاية ${selectedWilayaData.name}. سيتم تحويلك إلى التوصيل للمنزل.`);
                 quickDeliveryToHomeRadio.checked = true;
                 selectedDeliveryMethod = 'home';
             }
 
-            if (selectedDeliveryMethod === 'home') {
+            if (selectedWilayaData && selectedWilayaData.name === 'إليزي') {
+                alert('نعتذر، التوصيل غير متاح لهذه الولاية حالياً.');
+                quickWilayaSelect.value = '';
+                selectedWilayaData = null;
+                currentDeliveryPrice = 0;
+                quickCommuneGroup.style.display = 'none';
+                quickCommuneInput.removeAttribute('required');
+                quickCommuneInput.value = '';
+            } else if (selectedDeliveryMethod === 'home') {
                 currentDeliveryPrice = selectedWilayaData.home;
                 quickCommuneGroup.style.display = 'block';
                 quickCommuneInput.setAttribute('required', 'true');
-            } else {
+            } else { // 'office'
                 currentDeliveryPrice = selectedWilayaData.office;
                 quickCommuneGroup.style.display = 'none';
                 quickCommuneInput.removeAttribute('required');
                 quickCommuneInput.value = '';
             }
-        } else {
-            quickCommuneGroup.style.display = 'none';
-            quickCommuneInput.removeAttribute('required');
-            quickCommuneInput.value = '';
+            
+            // إزالة رسالة التوصيل المجاني إذا كانت موجودة
+            const existingMessage = document.querySelector('.free-delivery-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
         }
+    } else {
+        quickCommuneGroup.style.display = 'none';
+        quickCommuneInput.removeAttribute('required');
+        quickCommuneInput.value = '';
+        
+        // إزالة رسالة التوصيل المجاني إذا كانت موجودة
+        const existingMessage = document.querySelector('.free-delivery-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+    }
 
-        currentTotal += currentDeliveryPrice;
-        quickDeliveryPriceElement.textContent = `${currentDeliveryPrice.toLocaleString('ar-DZ')} د.ج`;
-        quickOrderGrandTotalElement.textContent = `${currentTotal.toLocaleString('ar-DZ')} د.ج`;
-    };
+    currentTotal += currentDeliveryPrice;
+    quickDeliveryPriceElement.textContent = `${currentDeliveryPrice.toLocaleString('ar-DZ')} د.ج`;
+    quickOrderGrandTotalElement.textContent = `${currentTotal.toLocaleString('ar-DZ')} د.ج`;
+};
 
     // Function to handle quantity changes
     const handleQuantityChange = () => {
