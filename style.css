@@ -2154,4 +2154,40 @@ button:hover {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 
+
+}
+
+
+
+
+
+
+/* رسالة التوصيل المجاني */
+.free-delivery-message {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb) !important;
+    color: #155724 !important;
+    padding: 12px 15px !important;
+    border-radius: var(--border-radius) !important;
+    margin-top: 15px !important;
+    font-size: 16px !important;
+    text-align: center !important;
+    border: 1px solid #c3e6cb !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+    animation: fadeIn 0.5s ease-in-out !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* تحسين التنسيق في صفحة الطلب المباشر */
+.quick-order-card .free-delivery-message {
+    margin: 10px 0 20px 0 !important;
+}
+
+/* تحسين التنسيق في صفحة معلومات الشحن */
+.info-page .free-delivery-message {
+    margin: 10px 0 20px 0 !important;
 }
